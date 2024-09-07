@@ -3,7 +3,7 @@ import { ArrowLeftEndOnRectangleIcon } from "@heroicons/react/24/solid";
 import { Link, Navigate, useParams } from "react-router-dom";
 import { Formik, Field, Form } from "formik";
 import * as Yup from "yup";
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer, toast, Zoom } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 import Error_message from "./Error_message";
@@ -22,7 +22,7 @@ const NoteForm = ({ isCreate }) => {
   const NoteFormSchema = Yup.object({
     title: Yup.string()
       .min(4, "Title is too short!")
-      .max(30, "Title is too long!")
+      .max(100, "Title is too long!")
       .required("Title is required!"),
     content: Yup.string()
       .min(5, "Content is too short!")
@@ -50,59 +50,41 @@ const NoteForm = ({ isCreate }) => {
   };
 
   useEffect(() => {
-    console.log(id);
     if (!isCreate && id) {
       getOldData();
     }
   }, []);
 
   const submitHandler = async (values) => {
-    if (isCreate) {
-      const res = await fetch(`${import.meta.env.VITE_API}/create`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(values),
-      });
-      if (res.status === 201) {
-        setRedirect(true);
-      } else {
-        toast.error("Something went wrong", {
-          position: "bottom-center",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-          transition: Zoom,
-        });
-      }
+    let API = `${import.meta.env.VITE_API}/create`;
+    let method = "POST";
+
+    if (!isCreate) {
+      API = `${import.meta.env.VITE_API}/edit-note/${id}`;
+      method = "PATCH"
+    }
+    
+    const res = await fetch(API, {
+      method,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(values),
+    });
+    if (res.status === 201 || res.status === 200) {
+      setRedirect(true);
     } else {
-      const res = await fetch(`${import.meta.env.VITE_API}/edit-note/${id}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(values),
+      toast.error("Something went wrong", {
+        position: "bottom-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        transition: Zoom,
       });
-      if (res.status === 200) {
-        setRedirect(true);
-      } else {
-        toast.error("Something went wrong", {
-          position: "bottom-center",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-          transition: Zoom,
-        });
-      }
     }
   };
 
@@ -172,7 +154,7 @@ const NoteForm = ({ isCreate }) => {
             className="text-white bg-teal-600 py-3 font-medium w-full text-center rounded-md"
             type="submit"
           >
-            Save Note
+            {isCreate ? "Share Note" : "Update Note"}
           </button>
         </Form>
       </Formik>

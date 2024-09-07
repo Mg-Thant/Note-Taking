@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import PlusIcon from "../components/PlusIcon";
 
 import Note from "../components/Note";
 import { Loading } from "./index";
@@ -37,7 +36,6 @@ const index = () => {
       ) : (
         <p className="text-xl font-bold">Create your note!</p>
       )}
-      <PlusIcon />
     </section>
   );
 };

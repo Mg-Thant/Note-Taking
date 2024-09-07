@@ -47,7 +47,7 @@ const Note = ({ note, fetchNotes }) => {
         pauseOnHover
         theme="light"
       />
-      <h3 className="text-xl font-medium mb-5 uppercase">{note.title}</h3>
+      <h3 className="text-xl font-medium mb-5 uppercase">{note.title.slice(0, 20)}</h3>
       <p className="text-md mb-4">{note.content.slice(0, 100)}</p>
       <hr />
       <div className="flex item-center justify-between gap-1 mt-2">
