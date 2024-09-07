@@ -2,7 +2,7 @@ import React from 'react'
 
 const Nav = () => {
   return (
-    <nav className='bg-slate-200 py-4 px-10'>
+    <nav className='bg-slate-200 py-6 px-10'>
       <h1 className='text-teal-600 font-bold text-4xl'>SHARENOTE.IO</h1>
     </nav>
   )

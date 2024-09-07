@@ -5,11 +5,11 @@ import { Create, Edit, Main, Home, Details } from "./pages/index";
 const App = () => {
   const router = createBrowserRouter([
     {
-      path: "/",
+      path: "",
       element: <Main />,
       children: [
         {
-          index: true,
+          path: "/",
           element: <Home />,
         },
         {
