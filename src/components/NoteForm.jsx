@@ -175,8 +175,8 @@ const NoteForm = ({ isCreate }) => {
                   id="title"
                   className="text-lg border-2 border-teal-600 py-1 px-2 w-full rounded-lg"
                 />
+                <ErrorMessage name="title" />
               </div>
-              <ErrorMessage name="title" />
               <div className="mb-3">
                 <label htmlFor="content" className="font-medium block mb-1">
                   Note content <span className="text-red-600">*</span>
