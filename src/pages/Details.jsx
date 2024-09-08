@@ -36,7 +36,7 @@ const Details = () => {
     <section className="w-4/6 px-10 mt-10 mx-auto">
       {loading && <Loading />}
       {!loading && note && (
-        <div className="border border-t-4 border-t-teal-600 shadow-slate-400 shadow-lg p-3">
+        <div className="border border-t-4 border-t-teal-600 shadow-slate-400 shadow-lg p-3 w-4/6 mx-auto">
           <div className="flex justify-between">
             <h3 className="text-3xl font-medium">{note.title}</h3>
             <Link to={"/"}>
@@ -46,11 +46,20 @@ const Details = () => {
               />
             </Link>
           </div>
+          {note.cover_image && (
+            <img
+              src={`${import.meta.env.VITE_API}/${note.cover_image}`}
+              alt={note.title}
+              className="my-4 h-72 w-full object-fill"
+            />
+          )}
           <div className="flex items-center gap-1">
             <UserIcon width={20} />
             {note.creator}
           </div>
-          <div className="text-sm flex items-center gap-1 mt-1"><CalendarDaysIcon width={30} /> {createdAt}</div>
+          <div className="text-sm flex items-center gap-1 mt-1">
+            <CalendarDaysIcon width={30} /> {createdAt}
+          </div>
           <p className="text-base mt-2">{note.content}</p>
         </div>
       )}
