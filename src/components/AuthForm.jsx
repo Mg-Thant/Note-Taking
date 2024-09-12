@@ -18,10 +18,12 @@ const AuthForm = ({ isLogin }) => {
   };
 
   const AuthFormSchema = Yup.object({
-    username: Yup.string()
-      .min(3, "Username is too short")
-      .max(15, "Username is too long")
-      .required("Username is required!"),
+    username: isLogin
+      ? null
+      : Yup.string()
+          .min(3, "Username is too short")
+          .max(15, "Username is too long")
+          .required("Username is required!"),
     email: Yup.string()
       .email("Email ,must be email format")
       .required("Email is required!"),
@@ -31,38 +33,44 @@ const AuthForm = ({ isLogin }) => {
   });
 
   const submitHandler = async (values) => {
-    console.log(values);
+    let API = `${import.meta.env.VITE_API}/register`;
     if (isLogin) {
-    } else {
-      const res = await fetch(`${import.meta.env.VITE_API}/register`, {
-        method: "POST",
-        headers: {
-          "Content-type": "application/json",
-        },
-        body: JSON.stringify(values),
+      API = `${import.meta.env.VITE_API}/login`;
+    }
+    const res = await fetch(API, {
+      method: "POST",
+      headers: {
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify(values),
+    });
+    const toastAlertFire = (message) => {
+      toast.error(message, {
+        position: "bottom-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        transition: Zoom,
       });
-      if (res.ok) {
-        setRedirect(true);
-      } else {
-        const { errorMessage } = await res.json();
-        const message = errorMessage[0].msg;
-        toast.error(message, {
-          position: "bottom-center",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-          transition: Zoom,
-        });
-      }
+    };
+    const resData = await res.json();
+    if (res.ok) {
+      setRedirect(true);
+    } else if (res.status === 400) {
+      const toastMessage = resData.erroeMessage[0].msg;
+      toastAlertFire(toastMessage);
+    } else if (res.status === 401) {
+      const toastMessage = resData.message;
+      toastAlertFire(toastMessage);
     }
   };
 
   if (redirect) {
-    return <Navigate to={"/"} />;
+    return <Navigate to={isLogin ? "/" : "/login"} />;
   }
 
   return (
