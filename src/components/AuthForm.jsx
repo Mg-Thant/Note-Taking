@@ -2,14 +2,16 @@ import { Formik, Field, Form } from "formik";
 import * as Yup from "yup";
 import { ToastContainer, toast, Zoom } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
-import ErrorMessage from "./ErrorMessage";
 import { Link, Navigate } from "react-router-dom";
 import { ArrowLeftEndOnRectangleIcon } from "@heroicons/react/24/solid";
-import { useState } from "react";
+import { useContext, useState } from "react";
+
+import ErrorMessage from "./ErrorMessage";
+import { UserContext } from "../contexts/UserContext";
 
 const AuthForm = ({ isLogin }) => {
   const [redirect, setRedirect] = useState(false);
+  const { setToken } = useContext(UserContext);
 
   const initialValues = {
     username: "",
@@ -58,7 +60,10 @@ const AuthForm = ({ isLogin }) => {
       });
     };
     const resData = await res.json();
-    if (res.ok) {
+    if (res.status === 201) {
+      setRedirect(true);
+    } else if (res.status === 200) {
+      setToken(resData);
       setRedirect(true);
     } else if (res.status === 400) {
       const toastMessage = resData.erroeMessage[0].msg;

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import {
   ArrowLeftEndOnRectangleIcon,
   ArrowUpTrayIcon,
@@ -10,12 +10,15 @@ import { ToastContainer, toast, Zoom } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 import ErrorMessage from "./ErrorMessage";
+import { UserContext } from "../contexts/UserContext";
 
 const NoteForm = ({ isCreate }) => {
   const [redirect, setRedirect] = useState(false);
   const [oldData, setOldData] = useState({});
   const [previewImg, setPreviewImg] = useState(null);
   const imgRef = useRef();
+
+  const {token} = useContext(UserContext);
 
   const params = useParams();
   const { id } = params;
@@ -109,6 +112,9 @@ const NoteForm = ({ isCreate }) => {
     const res = await fetch(API, {
       method,
       body: formData,
+      headers: {
+        Authorization : `Bearer ${token.token}`
+      }
     });
     if (res.status === 201 || res.status === 200) {
       setRedirect(true);
