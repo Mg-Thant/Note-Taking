@@ -9,6 +9,7 @@ import {
   SignIn,
   SignUp,
 } from "./pages/index";
+import isLoginLoader from "./utils/isLogin";
 
 const App = () => {
   const router = createBrowserRouter([
@@ -22,10 +23,12 @@ const App = () => {
         },
         {
           path: "/create",
+          loader: isLoginLoader,
           element: <Create />,
         },
         {
           path: "/edit/:id",
+          loader: isLoginLoader,
           element: <Edit />,
         },
         {

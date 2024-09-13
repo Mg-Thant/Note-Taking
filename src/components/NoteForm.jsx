@@ -8,6 +8,8 @@ import { Formik, Field, Form } from "formik";
 import * as Yup from "yup";
 import { ToastContainer, toast, Zoom } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import ReactLoading from "react-loading";
+
 
 import ErrorMessage from "./ErrorMessage";
 import { UserContext } from "../contexts/UserContext";
@@ -16,9 +18,10 @@ const NoteForm = ({ isCreate }) => {
   const [redirect, setRedirect] = useState(false);
   const [oldData, setOldData] = useState({});
   const [previewImg, setPreviewImg] = useState(null);
+  const [loading, setLoading] = useState(false);
   const imgRef = useRef();
 
-  const {token} = useContext(UserContext);
+  const { token } = useContext(UserContext);
 
   const params = useParams();
   const { id } = params;
@@ -94,6 +97,7 @@ const NoteForm = ({ isCreate }) => {
   };
 
   const submitHandler = async (values) => {
+    setLoading(true);
     let API = `${import.meta.env.VITE_API}/create`;
     let method = "POST";
 
@@ -113,8 +117,8 @@ const NoteForm = ({ isCreate }) => {
       method,
       body: formData,
       headers: {
-        Authorization : `Bearer ${token.token}`
-      }
+        Authorization: `Bearer ${token.token}`,
+      },
     });
     if (res.status === 201 || res.status === 200) {
       setRedirect(true);
@@ -131,6 +135,7 @@ const NoteForm = ({ isCreate }) => {
         transition: Zoom,
       });
     }
+    setLoading(false);
   };
 
   if (redirect) {
@@ -261,8 +266,22 @@ const NoteForm = ({ isCreate }) => {
               <button
                 className="text-white bg-teal-600 py-3 font-medium w-full text-center rounded-md"
                 type="submit"
+                disabled={loading}
               >
-                {isCreate ? "Share Note" : "Update Note"}
+                {loading ? (
+                  <div className="mx-auto w-fit h-fit">
+                    <ReactLoading
+                      type={"spin"}
+                      color={"#fff"}
+                      height={35}
+                      width={35}
+                    />
+                  </div>
+                ) : isCreate ? (
+                  "Share Note"
+                ) : (
+                  "Update Note"
+                )}
               </button>
             </Form>
           );

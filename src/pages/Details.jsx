@@ -53,10 +53,14 @@ const Details = () => {
               className="my-4 h-72 w-full object-fill"
             />
           )}
-          <div className="flex items-center gap-1">
-            <UserIcon width={20} />
-            {note.creator}
-          </div>
+          {note.creator ? (
+            <div className="flex items-center gap-1">
+              <UserIcon width={20} />
+              <p>{note.creator.username}</p>
+            </div>
+          ) : (
+            ""
+          )}
           <div className="text-sm flex items-center gap-1 mt-1">
             <CalendarDaysIcon width={30} /> {createdAt}
           </div>

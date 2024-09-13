@@ -5,13 +5,14 @@ import "react-toastify/dist/ReactToastify.css";
 import { Link, Navigate } from "react-router-dom";
 import { ArrowLeftEndOnRectangleIcon } from "@heroicons/react/24/solid";
 import { useContext, useState } from "react";
+import ReactLoading from "react-loading";
 
 import ErrorMessage from "./ErrorMessage";
 import { UserContext } from "../contexts/UserContext";
 
 const AuthForm = ({ isLogin }) => {
   const [redirect, setRedirect] = useState(false);
-  const { setToken } = useContext(UserContext);
+  const { updatedToken } = useContext(UserContext);
 
   const initialValues = {
     username: "",
@@ -63,7 +64,7 @@ const AuthForm = ({ isLogin }) => {
     if (res.status === 201) {
       setRedirect(true);
     } else if (res.status === 200) {
-      setToken(resData);
+      updatedToken(resData);
       setRedirect(true);
     } else if (res.status === 400) {
       const toastMessage = resData.erroeMessage[0].msg;
@@ -108,7 +109,7 @@ const AuthForm = ({ isLogin }) => {
         onSubmit={submitHandler}
         validationSchema={AuthFormSchema}
       >
-        {() => (
+        {({isSubmitting}) => (
           <Form>
             {!isLogin && (
               <div className="mb-3">
@@ -151,8 +152,22 @@ const AuthForm = ({ isLogin }) => {
             <button
               className="text-white bg-teal-600 py-3 font-medium w-full text-center rounded-md"
               type="submit"
+              disabled={isSubmitting}
             >
-              {isLogin ? "Login" : "Sign Up"}
+              {isSubmitting ? (
+                <div className="mx-auto w-fit h-fit">
+                  <ReactLoading
+                    type={"spin"}
+                    color={"#fff"}
+                    height={35}
+                    width={35}
+                  />
+                </div>
+              ) : isLogin ? (
+                "Login"
+              ) : (
+                "Sign Up"
+              )}
             </button>
           </Form>
         )}

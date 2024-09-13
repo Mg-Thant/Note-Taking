@@ -16,7 +16,6 @@ const index = () => {
         return res.json();
       })
       .then((data) => {
-        console.log(data);
         setNotes(data.notes);
         setTotalnotes(data.totalNotes);
         setLoading(false);
